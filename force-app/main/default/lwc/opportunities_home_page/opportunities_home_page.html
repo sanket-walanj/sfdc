@@ -1,0 +1,17 @@
+<template>
+    <lightning-card title="Opportunities App Home Page">
+        <!-- Search box -->
+        <div class="search_container">
+            <lightning-input type="search" label="Search based on Opportunity Stage, Account Name or Contact Name"
+                value={searchText} onkeyup={searchOpportunities}></lightning-input>
+        </div>
+
+        <!-- Table -->
+        <div class="table_container">
+            <lightning-card title="Opportunities Data Table">
+                <lightning-datatable key-field="id" data={opportunities} columns={columns} hide-checkbox-column="true">
+                </lightning-datatable>
+            </lightning-card>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,22 @@
+<template>
+    <div class="header" style="background-color: #fff;">
+        <div class="title">
+            Cocktails
+        </div>
+        <div class="search_container">
+            <input type="search" name="Search" class="searchbox" onkeyup={searchCocktails}>
+        </div>
+    </div>
+    <div class="cocktail_wrapper">
+        <template for:each={cocktails} for:item="cocktail">
+            <div class="cocktail_container" key={cocktail.idDrink}>
+                <div class="cocktail_image">
+                    <img src={cocktail.strDrinkThumb} alt="">
+                </div>
+                <div class="cocktail_name">
+                    {cocktail.strDrink}
+                </div>
+            </div>
+        </template>
+    </div>
+</template>
