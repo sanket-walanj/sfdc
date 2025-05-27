@@ -38,6 +38,5 @@ public class AccountController {
         // Retrieve all accounts using getAllAccounts method
         List<Account> accounts = getAllAccounts();
         return accounts.size();
-        
     }
 }
