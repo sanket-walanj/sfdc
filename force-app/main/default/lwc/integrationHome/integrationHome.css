@@ -54,9 +54,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(125, 122, 122, 0.1);
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
-  cursor: pointer;
 }
