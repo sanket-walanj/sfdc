@@ -2,7 +2,23 @@
   <div class="wrapper">
     <h1 class="headline">Integration Title</h1>
     <div class="container">
-      <div class="card">Account</div>
+      <div class="card">
+        <lightning-card title="All Accounts">
+          <template if:true={accounts}>
+            <template for:each={accounts} for:item="acc">
+              <div key={acc.Id} class="slds-box slds-m-around_x-small">
+                <p><strong>Name:</strong> {acc.Name}</p>
+                <p><strong>Phone:</strong> {acc.Phone}</p>
+                <p><strong>Industry:</strong> {acc.Industry}</p>
+                <p><strong>Rating:</strong> {acc.Rating}</p>
+              </div>
+            </template>
+          </template>
+          <template if:true={error}>
+            <p class="slds-text-color_error">Error: {error.body.message}</p>
+          </template>
+        </lightning-card>
+      </div>
       <div class="card">Contact</div>
       <div class="card">Opportunity</div>
       <div class="card">Lead</div>
