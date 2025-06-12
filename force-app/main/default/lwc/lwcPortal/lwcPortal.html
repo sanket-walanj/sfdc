@@ -1,1 +1,34 @@
-<template> LWC Portal </template>
+<template>
+  <div class="tabs">
+    <button class="button" data-tab="tab1" onclick={handleTabClick}>
+      Home
+    </button>
+    <button class="button" data-tab="tab2" onclick={handleTabClick}>
+      Profile
+    </button>
+    <button class="button" data-tab="tab3" onclick={handleTabClick}>
+      Settings
+    </button>
+  </div>
+
+  <template if:true={isTab1}>
+    <div class="tab-content">
+      <h2>Home</h2>
+      <p>Welcome to the Home section!</p>
+    </div>
+  </template>
+
+  <template if:true={isTab2}>
+    <div class="tab-content">
+      <h2>Profile</h2>
+      <p>This is your Profile section.</p>
+    </div>
+  </template>
+
+  <template if:true={isTab3}>
+    <div class="tab-content">
+      <h2>Settings</h2>
+      <p>Adjust your preferences in the Settings section.</p>
+    </div>
+  </template>
+</template>
