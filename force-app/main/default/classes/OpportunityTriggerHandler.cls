@@ -1,6 +1,17 @@
 public class OpportunityTriggerHandler {
   public static void afterUpdateHandler(List<Opportunity> newRecords) {
     List<Task> taskListToInsert = new List<Task>();
+    List<Id> listOfoppIds = new List<Id>();
+    List<OpportunityTeamMember> deleteMemberList = new List<OpportunityTeamMember>();
+
+    for (Opportunity opp : newRecords) {
+      listOfoppIds.add(opp.Id);
+    }
+    List<OpportunityTeamMember> oppTeamMembers = [
+      SELECT Id, OpportunityId
+      FROM OpportunityTeamMember
+      WHERE OpportunityId IN :listOfoppIds
+    ];
     for (Opportunity opp : newRecords) {
       if (opp.StageName == 'Closed Won') {
         Task taskRecord = new Task();
@@ -11,10 +22,19 @@ public class OpportunityTriggerHandler {
         taskRecord.Status = 'Not Started';
         taskRecord.WhatId = opp.Id;
         taskListToInsert.add(taskRecord);
+      } else if (opp.StageName == 'Closed Lost') {
+        for (OpportunityTeamMember teamMember : oppTeamMembers) {
+          if (teamMember.OpportunityId == opp.Id) {
+            deleteMemberList.add(teamMember);
+          }
+        }
       }
     }
     if (!taskListToInsert.isEmpty()) {
       insert taskListToInsert;
+    }
+    if (!deleteMemberList.isEmpty()) {
+      delete deleteMemberList;
     }
   }
 
