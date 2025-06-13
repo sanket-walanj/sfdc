@@ -45,4 +45,21 @@ public class AccountTriggerHandler {
       }
     }
   }
+
+  public static void afterInsertHandler(List<Account> newRecords) {
+    List<Contact> listOfContact = new List<Contact>();
+    for (Account acc : newRecords) {
+      if (acc.Create_n_contacts__c != null) {
+        for (Integer i = 0; i < acc.Create_n_contacts__c; i++) {
+          Contact con = new Contact();
+          con.LastName = acc.Name + i;
+          con.AccountId = acc.Id;
+          listOfContact.add(con);
+        }
+      }
+    }
+    if (!listOfContact.isEmpty()) {
+      insert listOfContact;
+    }
+  }
 }
