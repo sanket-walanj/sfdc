@@ -32,34 +32,36 @@ public class OpportunityTriggerHandler {
     }
   }
 
-  public static void afterDeleteHandler(List<Opportunity> oppRecords) {
-    List<Task> taskRecordList = new List<Task>();
-    Set<Id> accountIds = new Set<Id>();
-    Map<Id, Id> oppToAccMap = new Map<Id, Id>();
-    Map<Id, Id> oppIdToOwnerIdMap = new Map<Id, Id>();
-    for (Opportunity opp : oppRecords) {
+  public static void afterDeleteHandler(List<Opportunity> oldRecords) {
+    Set<id> accountIds = new Set<id>();
+    Map<id, id> oppvsAccountMap = new Map<id, id>();
+    Map<id, id> accIdVsOwnerIdMap = new Map<id, id>();
+
+    for (Opportunity opp : oldRecords) {
       accountIds.add(opp.AccountId);
-      oppToAccMap.put(opp.Id, opp.AccountId);
+      oppvsAccountMap.put(opp.Id, opp.AccountId);
     }
-    List<Account> accounts = [
-      SELECT OwnerId
+
+    for (Account acc : [
+      SELECT Id, OwnerId
       FROM Account
       WHERE Id IN :accountIds
-    ];
-    for (Account acc : accounts) {
-      oppIdToOwnerIdMap.put(acc.Id, acc.OwnerId);
+    ]) {
+      accIdVsOwnerIdMap.put(acc.id, acc.OwnerId);
     }
-    for (Opportunity opp : oppRecords) {
+
+    List<Task> taskRecordList = new List<Task>();
+    for (Opportunity opp : oldRecords) {
       Task taskRecord = new Task();
-      taskRecord.Description = 'Investigate why opportunity was deleted';
       taskRecord.Priority = 'High';
-      taskRecord.Subject = 'Follow up';
-      taskRecord.WhatId = opp.Id;
-      taskRecord.OwnerId = oppIdToOwnerIdMap.get(oppToAccMap.get(opp.Id));
-      taskRecord.Status = 'Not Started';
+      taskRecord.Description = 'Task Created Successfully';
+      taskRecord.Subject = 'Follow Up';
+      taskRecord.OwnerId = accIdVsOwnerIdMap.get(oppvsAccountMap.get(opp.Id));
       taskRecordList.add(taskRecord);
     }
+
     if (!taskRecordList.isEmpty()) {
+      System.debug('taskRecordList::::' + JSON.serializePretty(taskRecordList));
       insert taskRecordList;
     }
   }
