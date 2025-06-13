@@ -26,4 +26,12 @@ public class LeadTriggerHandler {
       insert taskListToInsert;
     }
   }
+
+  public static void beforeDeleteHandler(List<Lead> newRecords) {
+    for (Lead leadRecord : newRecords) {
+      if (leadRecord.Status == 'Working-Contacted') {
+        leadRecord.addError('You cannot delete a Working-Contacted Lead');
+      }
+    }
+  }
 }
