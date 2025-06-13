@@ -10,4 +10,21 @@ public class LeadTriggerHandler {
       }
     }
   }
+
+  public static void afterInsertHandler(List<Lead> newRecords) {
+    List<Task> taskListToInsert = new List<Task>();
+    for (Lead leadRecord : newRecords) {
+      Task taskRecord = new Task();
+      taskRecord.OwnerId = leadRecord.OwnerId;
+      taskRecord.Subject = 'Follow Up';
+      taskRecord.Description = 'Follow up with the customer';
+      taskRecord.WhoId = leadRecord.Id;
+      taskRecord.Status = 'Not Started';
+      taskListToInsert.add(taskRecord);
+    }
+
+    if (!taskListToInsert.isEmpty()) {
+      insert taskListToInsert;
+    }
+  }
 }
