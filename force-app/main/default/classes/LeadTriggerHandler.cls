@@ -22,7 +22,6 @@ public class LeadTriggerHandler {
       taskRecord.Status = 'Not Started';
       taskListToInsert.add(taskRecord);
     }
-
     if (!taskListToInsert.isEmpty()) {
       insert taskListToInsert;
     }
