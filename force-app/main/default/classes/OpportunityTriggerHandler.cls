@@ -1,30 +1,20 @@
 public class OpportunityTriggerHandler {
-    
-    public static void afterUpdateHandler(List<Opportunity> newRecords){
-        List<Task> taskListToInsert = new List<Task>();
-        for(Opportunity opp: newRecords){
-            if(opp.StageName == 'Closed Won'){
-                Task newTask = new task();
-                newTask.Priority = 'High';
-                newTask.Subject = 'Split Revenue';
-                newTask.WhatId = opp.Id;
-                newTask.OwnerId = opp.OwnerId;
-                newTask.Description = 'Split Revenue among the members';
-                taskListToInsert.add(newTask);
-            }
-        }
-        if(!taskListToInsert.isEmpty()){
-            insert taskListToInsert;
-        }
+  public static void afterUpdateHandler(List<Opportunity> newRecords) {
+    List<Task> taskListToInsert = new List<Task>();
+    for (Opportunity opp : newRecords) {
+      if (opp.StageName == 'Closed Won') {
+        Task taskRecord = new Task();
+        taskRecord.Priority = 'High';
+        taskRecord.OwnerId = opp.OwnerId;
+        taskRecord.Description = 'Split Revenue';
+        taskRecord.Subject = 'Split Revenue';
+        taskRecord.Status = 'Not Started';
+        taskRecord.WhatId = opp.Id;
+        taskListToInsert.add(taskRecord);
+      }
     }
-    
-    public static void beforeUpdateHandler(List<Opportunity> newRecords, Map<Id, Opportunity> oldMap){
-        
-        for(Opportunity opp: newRecords){
-            if(oldMap.get(opp.Id).StageName != opp.StageName){
-                opp.Amount = opp.Probability * opp.ExpectedRevenue;
-            }
-        }
-        
+    if (!taskListToInsert.isEmpty()) {
+      insert taskListToInsert;
     }
+  }
 }
