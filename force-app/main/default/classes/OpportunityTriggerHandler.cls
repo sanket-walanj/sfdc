@@ -17,4 +17,18 @@ public class OpportunityTriggerHandler {
       insert taskListToInsert;
     }
   }
+
+  public static void beforeUpdateHandler(
+    List<Opportunity> newRecords,
+    Map<Id, Opportunity> oldRecords
+  ) {
+    for (Opportunity opp : newRecords) {
+      if (
+        opp.StageName != oldRecords.get(opp.Id).StageName &&
+        opp.StageName == 'Closed Won'
+      ) {
+        opp.Amount = opp.ExpectedRevenue * opp.Probability;
+      }
+    }
+  }
 }
