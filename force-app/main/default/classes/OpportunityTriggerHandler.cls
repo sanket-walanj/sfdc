@@ -31,4 +31,36 @@ public class OpportunityTriggerHandler {
       }
     }
   }
+
+  public static void afterDeleteHandler(List<Opportunity> oppRecords) {
+    List<Task> taskRecordList = new List<Task>();
+    Set<Id> accountIds = new Set<Id>();
+    Map<Id, Id> oppToAccMap = new Map<Id, Id>();
+    Map<Id, Id> oppIdToOwnerIdMap = new Map<Id, Id>();
+    for (Opportunity opp : oppRecords) {
+      accountIds.add(opp.AccountId);
+      oppToAccMap.put(opp.Id, opp.AccountId);
+    }
+    List<Account> accounts = [
+      SELECT OwnerId
+      FROM Account
+      WHERE Id IN :accountIds
+    ];
+    for (Account acc : accounts) {
+      oppIdToOwnerIdMap.put(acc.Id, acc.OwnerId);
+    }
+    for (Opportunity opp : oppRecords) {
+      Task taskRecord = new Task();
+      taskRecord.Description = 'Investigate why opportunity was deleted';
+      taskRecord.Priority = 'High';
+      taskRecord.Subject = 'Follow up';
+      taskRecord.WhatId = opp.Id;
+      taskRecord.OwnerId = oppIdToOwnerIdMap.get(oppToAccMap.get(opp.Id));
+      taskRecord.Status = 'Not Started';
+      taskRecordList.add(taskRecord);
+    }
+    if (!taskRecordList.isEmpty()) {
+      insert taskRecordList;
+    }
+  }
 }

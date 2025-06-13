@@ -1,4 +1,8 @@
-trigger OpportunityTrigger on Opportunity(after update, before update) {
+trigger OpportunityTrigger on Opportunity(
+  after update,
+  before update,
+  after delete
+) {
   switch on Trigger.operationType {
     when AFTER_UPDATE {
       OpportunityTriggerHandler.afterUpdateHandler(Trigger.new);
@@ -8,6 +12,9 @@ trigger OpportunityTrigger on Opportunity(after update, before update) {
         Trigger.new,
         Trigger.oldMap
       );
+    }
+    when AFTER_DELETE {
+      OpportunityTriggerHandler.afterDeleteHandler(Trigger.old);
     }
   }
 }
