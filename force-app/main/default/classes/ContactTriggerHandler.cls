@@ -13,15 +13,33 @@ public class ContactTriggerHandler {
         );
       }
 
-      for (Contact existingCon : existingContacts) {
-        if (
-          con.LastName == existingCon.LastName ||
-          con.Phone == existingCon.Phone ||
-          con.Email == existingCon.Email
-        ) {
-          con.addError('Duplicate Found');
-        }
-      }
+      // for (Contact existingCon : existingContacts) {
+      //   if (
+      //     con.LastName == existingCon.LastName ||
+      //     con.Phone == existingCon.Phone ||
+      //     con.Email == existingCon.Email
+      //   ) {
+      //     con.addError('Duplicate Found');
+      //   }
+      // }
+    }
+  }
+  public static void afterInsertHandler(List<Contact> newRecords) {
+    List<ContactShare> addRecordToList = new List<ContactShare>();
+    Id conInnoPublicGroup = [
+      SELECT Id, Name
+      FROM Group
+      WHERE Name = 'Contact Innovators'
+      LIMIT 1
+    ]
+    .Id;
+    for (Contact con : newRecords) {
+      ContactShare conS = new ContactShare();
+      conS.ContactId = con.Id;
+      conS.UserOrGroupId = con.OwnerId;
+      conS.RowCause = 'Manual';
+      conS.ContactAccessLevel = 'Edit';
+      addRecordToList.add(conS);
     }
   }
 }
