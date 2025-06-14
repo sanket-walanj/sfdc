@@ -8,4 +8,19 @@ public class CaseTriggerHandler {
       }
     }
   }
+  public static void beforeDeleteHandler(List<Case> oldRecords) {
+    Id currentUserProfileId = UserInfo.getProfileId();
+    Id sysAdminProfileId = [
+      SELECT Id, Name
+      FROM Profile
+      WHERE Name = 'System Administrator'
+      LIMIT 1
+    ]
+    .Id;
+    for (Case caseRecord : oldRecords) {
+      if (currentUserProfileId != sysAdminProfileId) {
+        caseRecord.addError('You are not allowed to delete the record');
+      }
+    }
+  }
 }
