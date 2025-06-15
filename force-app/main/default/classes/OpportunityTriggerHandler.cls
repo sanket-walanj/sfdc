@@ -85,4 +85,33 @@ public class OpportunityTriggerHandler {
       insert taskRecordList;
     }
   }
+
+  public static void addTeamMembers(
+    List<Opportunity> newRecords,
+    Map<Id, Opportunity> oldMapRecords
+  ) {
+    List<User> opportunists = [
+      SELECT Id, UserRole.Name
+      FROM User
+      WHERE isActive = TRUE AND UserRole.Name = 'Opportunists'
+    ];
+    List<OpportunityTeamMember> oppMemberList = new List<OpportunityTeamMember>();
+    for (Opportunity opp : newRecords) {
+      if (
+        opp.StageName == 'Needs Analysis' &&
+        opp.StageName != oldMapRecords.get(opp.Id).StageName
+      ) {
+        for (User userRec : opportunists) {
+          OpportunityTeamMember oppMember = new OpportunityTeamMember();
+          oppMember.OpportunityId = opp.Id;
+          oppMember.OpportunityAccessLevel = 'Edit';
+          oppMember.UserId = userRec.Id;
+          oppMemberList.add(oppMember);
+        }
+      }
+    }
+    if (!oppMemberList.isEmpty()) {
+      insert oppMemberList;
+    }
+  }
 }

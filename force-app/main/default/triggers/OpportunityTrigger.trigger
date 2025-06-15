@@ -6,6 +6,7 @@ trigger OpportunityTrigger on Opportunity(
   switch on Trigger.operationType {
     when AFTER_UPDATE {
       OpportunityTriggerHandler.afterUpdateHandler(Trigger.new);
+      OpportunityTriggerHandler.addTeamMembers(Trigger.new, Trigger.oldmap);
     }
     when BEFORE_UPDATE {
       OpportunityTriggerHandler.beforeUpdateHandler(
